@@ -1,7 +1,7 @@
 import csv, json, time
 import numpy as np
 import os, configparser, math
-from tools.utils import *
+from .tools.utils import *
 
 # constant definition
 PI = 3.141592654
