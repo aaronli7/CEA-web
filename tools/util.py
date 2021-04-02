@@ -49,6 +49,7 @@ def query_ghi(lon, lat):
         day_list.extend([i] * 24)
     df["Day"] = day_list
 
+    print(df)
     return df
 
 query_ghi(-161.207778, 55.999722)
