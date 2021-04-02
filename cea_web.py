@@ -10,11 +10,9 @@ db_path = "us_cities.db"
 sql_path = "us_cities.sql"
 
 
-@app.route("/", methods=['GET'])
-def hello():
-    return "hello test!"
-
-
+@app.route("/")
+def home():
+    return render_template("home.html", title="CEA Simulator Home Page")
 
 
 if not os.path.exists(db_path):
