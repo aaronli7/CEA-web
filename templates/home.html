@@ -1,12 +1,61 @@
 {% extends 'main.html' %}
 {% block content %}
-<h2>
-    Welcome to the CEA tomatoes growth simulator! 
-</h2>
-<div>
-    <p>
+
+<div class="container">
+    <h2 align="center">
+        Welcome to the CEA tomatoes growth simulator! 
+    </h2>
+    <p align="center">
         Our application provides you easy way to simulate the growth of your tomatoes.
     </p>
+    <h2>
+        Start your simulation
+    </h2>
+    <p>
+        <form action="#" method="POST">
+            <div class="col-md-6" >
+              <label for="CO2" class="form-label">CO2 (mg/m^2 .s)</label>
+              <input type="number" class="form-control" name="CO2" id="CO2" placeholder="234" step="any" required>
+            </div>
+            <div class="col-md-6">
+              <label for="temperature" class="form-label">temperature (Celsius)</label>
+              <input type="number" class="form-control" name="temperature" id="temperature" placeholder="23" step="any" required>
+            </div>
+            <div class="col-md-6">
+                <label for="fruit_per_truss" class="form-label">Fruit per truss</label>
+                <input type="number" class="form-control" name="fruit_per_truss" id="fruit_per_truss" placeholder="7" required>
+            </div>
+            
+            <div class="col-md-6 text-right">
+                <label>Select States</label>
+                <select name="state_name" id="state_name" class="form-control" title="Select State">
+                    <option value="1">GA</option>
+                    <option value="2">CA</option>
+                </select>
+
+                <label>Select cities</label>
+                <select name="city_name" id="city_name" class="form-control" title="Select Cities">
+                    <option value="1">Athens</option>
+                    <option value="2">Los Angels</option>
+                </select>
+
+            </div>
+
+            <button type="submit" class="btn btn-primary">Start Simulation</button>
+        </form>
+    </p>
 </div>
+
+<script>
+    $(document).ready(function(){
+        console.log("I am running")
+        tail.select('#state_name', {
+            search:true
+        });
+        tail.select('#city_name', {
+            search:true
+        });
+    });
+</script>
 
 {% endblock %}
