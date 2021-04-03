@@ -25,22 +25,20 @@
                 <label for="fruit_per_truss" class="form-label">Fruit per truss</label>
                 <input type="number" class="form-control" name="fruit_per_truss" id="fruit_per_truss" placeholder="7" required>
             </div>
-            
-            <div class="col-md-6 text-right">
-                <label>Select States</label>
-                <select name="state_name" id="state_name" class="form-control" title="Select State">
+            <div>
+                <label for="state_name">Select States</label>
+                <select name="state_name" id="state_name" title="Select State">
                     <option value="1">GA</option>
                     <option value="2">CA</option>
                 </select>
-
-                <label>Select cities</label>
-                <select name="city_name" id="city_name" class="form-control" title="Select Cities">
+            </div>
+            <div>
+                <label for="city_name" class="form-label">Select cities</label>
+                <select name="city_name" id="city_name" title="Select Cities">
                     <option value="1">Athens</option>
                     <option value="2">Los Angels</option>
                 </select>
-
             </div>
-
             <button type="submit" class="btn btn-primary">Start Simulation</button>
         </form>
     </p>
