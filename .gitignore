@@ -133,3 +133,5 @@ dmypy.json
 settings.json
 *.csv
 .DS_Store
+package-lock.json
+package.json
