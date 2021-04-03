@@ -28,8 +28,9 @@
             <div>
                 <label for="state_name">Select States</label>
                 <select name="state_name" id="state_name" title="Select State">
-                    <option value="1">GA</option>
-                    <option value="2">CA</option>
+                    {%for state_id, state_name in states_info%}
+                    <option value={{state_id}}>{{state_name}}</option>
+                    {% endfor %}
                 </select>
             </div>
             <div>

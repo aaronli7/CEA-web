@@ -10,9 +10,18 @@ db_path = "us_cities.db"
 sql_path = "us_cities.sql"
 
 
-@app.route("/")
+@app.route("/", methods=['POST', 'GET'])
 def home():
-    return render_template("home.html", title="CEA Simulator Home Page")
+    if request.method == 'POST':
+        pass
+
+    show_states_query = "SELECT ID, STATE_NAME FROM US_STATES"
+    with sqlite3.connect(db_path) as con:
+        result = pd.read_sql(show_states_query, con, index_col=None)
+        states_name = result['STATE_NAME']
+        states_id = result['ID']
+        states_info = zip(states_id, states_name)
+    return render_template("home.html", title="CEA Simulator Home Page", states_info=states_info)
 
 
 if not os.path.exists(db_path):
