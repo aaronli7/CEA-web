@@ -62,22 +62,33 @@
         $("#city_name").selectpicker();
         
         function load_data(type, category_id){
+            console.log({type:type, category_id: category_id})
             $.ajax({
-                url: "/state",
+                url: "/city",
                 method: "POST",
                 data: {type: type, category_id: category_id},
                 dataType: "json",
                 success: function(data){
                     var html ="";
-                    for (var count = 0; count < data.length; count++){
-                        html += '<option value="' + data[count]+ '">' + data[count] + "</option>";
+                    if (type == "cityData"){
+                        for (var count = 0; count < data.length; count++){
+                            html += '<option value="' + data[count][0]+ '">' + data[count][1] + "</option>";
+                        }
+                    }   
+                    else{
+                        for (var count = 0; count < data.length; count++){
+                            html += '<option value="' + data[count]+ '">' + data[count] + "</option>";
+                        }
                     }
                     if (type == "stateData"){
                         $("#state_name").html(html);
                         $("#state_name").selectpicker("refresh");
-                    } else{
+                    } else if (type == "countyData"){
                         $("#county_name").html(html);
                         $("#county_name").selectpicker("refresh");
+                    } else{
+                        $("#city_name").html(html);
+                        $("#city_name").selectpicker("refresh");
                     }
                 },
             });
@@ -86,6 +97,14 @@
         $(document).on("change", "#state_name", function(){
             var category_id = $("#state_name").val();
             load_data("countyData", category_id);
+        });
+
+        $(document).on("change", "#county_name", function(){
+            var state_id = $("#state_name").val();
+            var county_id = $("#county_name").val();
+            var city_info = [state_id, county_id];
+            console.log(city_info[1])
+            load_data("cityData", city_info);
         });
     });
 

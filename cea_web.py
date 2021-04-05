@@ -23,40 +23,39 @@ def home():
         states_info = zip(states_id, states_name)
     return render_template("home.html", title="CEA Simulator Home Page", states_info=states_info)
 
-@app.route("/state", methods=["POST", "GET"])
+@app.route("/city", methods=["POST", "GET"])
 def select_states():
     if request.method == 'POST':
-        state_id = request.form["category_id"]
-        show_county_query = f"""
-            SELECT
-                DISTINCT COUNTY
-            FROM US_CITIES
-            WHERE ID_STATE={state_id}
-            ORDER BY COUNTY ASC;
-        """
-        with sqlite3.connect(db_path) as con:
-            result = pd.read_sql(show_county_query, con, index_col=None)
-            county_name = result['COUNTY']
-            output_array = county_name.to_json(orient="values")
-            # print(output_array[0]["COUNTY"])
-    return output_array
+        data_type = request.form["type"]
 
-# @app.route("/city", methods=["POST", "GET"])
-# def select_city():
-#     if request.method == 'POST':
-#         state_id = request.form["category_id"]
-#         show_county_query = f"""
-#             SELECT
-#                 DISTINCT COUNTY
-#             FROM US_CITIES
-#             WHERE ID_STATE={state_id}
-#         """
-#         with sqlite3.connect(db_path) as con:
-#             result = pd.read_sql(show_county_query, con, index_col=None)
-#             county_name = result['COUNTY']
-#             output_array = county_name.to_json(orient="values")
-#             # print(output_array[0]["COUNTY"])
-#     return output_array
+        if data_type == "countyData":
+            state_id = request.form["category_id"]
+            show_county_query = f"""
+                SELECT
+                    DISTINCT COUNTY
+                FROM US_CITIES
+                WHERE ID_STATE={state_id}
+                ORDER BY COUNTY ASC;
+            """
+            with sqlite3.connect(db_path) as con:
+                result = pd.read_sql(show_county_query, con, index_col=None)
+                county_name = result['COUNTY']
+                output_array = county_name.to_json(orient="values")
+
+        elif data_type == "cityData":
+            city_info = request.form.getlist("category_id[]")
+            show_city_query = f"""
+                SELECT
+                    ID, CITY
+                FROM US_CITIES
+                WHERE ID_STATE={city_info[0]} AND COUNTY='{city_info[1]}'
+                ORDER BY CITY ASC;
+            """
+            with sqlite3.connect(db_path) as con:
+                result = pd.read_sql(show_city_query, con, index_col=None)
+                output_array = result.to_json(orient="values")
+
+    return output_array
 
 if not os.path.exists(db_path):
     create_db(db=db_path, sql_script=sql_path)
