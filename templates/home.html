@@ -25,20 +25,30 @@
                 <label for="fruit_per_truss" class="form-label">Fruit per truss</label>
                 <input type="number" class="form-control" name="fruit_per_truss" id="fruit_per_truss" placeholder="7" required>
             </div>
-            <div>
-                <label for="state_name">Select States</label>
-                <select name="state_name" id="state_name" title="Select State">
-                    {%for state_id, state_name in states_info%}
-                    <option value={{state_id}}>{{state_name}}</option>
-                    {% endfor %}
-                </select>
-            </div>
-            <div>
-                <label for="city_name" class="form-label">Select cities</label>
-                <select name="city_name" id="city_name" title="Select Cities">
-                    <option value="1">Athens</option>
-                    <option value="2">Los Angels</option>
-                </select>
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="state_name">Select States</label>
+                    <select name="state_name" id="state_name" data-live-search="true" title="Select State">
+                        {%for state_id, state_name in states_info%}
+                        <option value={{state_id}}>{{state_name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="county_name" class="form-label">Select county</label>
+                    <select name="county_name" id="county_name" data-live-search="true" title="Select County">
+                        {%for county in county_info%}
+                        <option value={{county}}>{{county}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="city_name" class="form-label">Select cities</label>
+                    <select name="city_name" id="city_name" data-live-search="true" title="Select Cities">
+                        <option value="1">Athens</option>
+                        <option value="2">Los Angels</option>
+                    </select>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Start Simulation</button>
         </form>
@@ -47,14 +57,38 @@
 
 <script>
     $(document).ready(function(){
-        console.log("I am running")
-        tail.select('#state_name', {
-            search:true
-        });
-        tail.select('#city_name', {
-            search:true
+        $("#state_name").selectpicker();
+        $("#county_name").selectpicker();
+        $("#city_name").selectpicker();
+        
+        function load_data(type, category_id){
+            $.ajax({
+                url: "/state",
+                method: "POST",
+                data: {type: type, category_id: category_id},
+                dataType: "json",
+                success: function(data){
+                    var html ="";
+                    for (var count = 0; count < data.length; count++){
+                        html += '<option value="' + data[count]+ '">' + data[count] + "</option>";
+                    }
+                    if (type == "stateData"){
+                        $("#state_name").html(html);
+                        $("#state_name").selectpicker("refresh");
+                    } else{
+                        $("#county_name").html(html);
+                        $("#county_name").selectpicker("refresh");
+                    }
+                },
+            });
+        }
+
+        $(document).on("change", "#state_name", function(){
+            var category_id = $("#state_name").val();
+            load_data("countyData", category_id);
         });
     });
+
 </script>
 
 {% endblock %}
