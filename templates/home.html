@@ -37,16 +37,11 @@
                 <div class="form-group col-md-4">
                     <label for="county_name" class="form-label">Select county</label>
                     <select name="county_name" id="county_name" data-live-search="true" title="Select County">
-                        {%for county in county_info%}
-                        <option value={{county}}>{{county}}</option>
-                        {% endfor %}
                     </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="city_name" class="form-label">Select cities</label>
                     <select name="city_name" id="city_name" data-live-search="true" title="Select Cities">
-                        <option value="1">Athens</option>
-                        <option value="2">Los Angels</option>
                     </select>
                 </div>
             </div>
