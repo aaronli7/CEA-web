@@ -110,6 +110,9 @@
         $("#start_button").click(function(e) {
             console.log("button clicked");
             console.log($("#temperature").val() )
+            if (!$('#temperature').val() || !$('#CO2').val() || !$('#fruit_per_truss').val() || !$('#state_name').val() || !$('#county_name').val() || !$('#city_name').val()) {
+                alert('Empty value!');
+            }
             e.preventDefault();
             $.ajax({
                 type: "POST",
