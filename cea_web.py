@@ -25,9 +25,6 @@ def home():
         """
         with sqlite3.connect(db_path) as con:
             location = pd.read_sql(query_location, con, index_col=None)
-            # lat = location.iloc[0]['LATITUDE']
-            # lon = location.iloc[0]['LONGITUDE']
-            # sim_result = str(lat) + "  " + str(lon)
             output_array = location.to_json(orient="values")
             print(output_array)
             return output_array

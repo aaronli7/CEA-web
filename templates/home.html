@@ -45,7 +45,7 @@
                     </select>
                 </div>
             </div>
-            <button id="start_button" type="submit" name="starbut" class="btn btn-primary">Start Simulation</button>
+            <button id="start_button" type="button" name="starbut" class="btn btn-primary">Start Simulation</button>
         </form>
     </p>
     <h2>
@@ -118,11 +118,11 @@
                 data: { 
                     temperature: $("#temperature").val(),
                     CO2: $("#CO2").val(),
-                    fruit_per_truss: $("#fruit_per_truss").val(), // < note use of 'this' here
-                    city_id: $("#city_name").val() 
+                    fruit_per_truss: $("#fruit_per_truss").val(),
+                    city_id: $("#city_name").val()
                 },
                 success: function(result) {
-                    var html="lon:" + result[0][0];
+                    var html="lat:" + result[0][0] + " lon:" + result[0][1];
                     $("#sim_result").html(html);
                 },
                 error: function(result) {
