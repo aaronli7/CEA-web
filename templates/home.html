@@ -12,7 +12,7 @@
         Start your simulation
     </h2>
     <p>
-        <form action="#" method="POST">
+        <form action="/" method="POST">
             <div class="col-md-6" >
               <label for="CO2" class="form-label">CO2 (mg/m^2 .s)</label>
               <input type="number" class="form-control" name="CO2" id="CO2" placeholder="234" step="any" required>
@@ -28,7 +28,7 @@
             <div class="row">
                 <div class="form-group col-md-4">
                     <label for="state_name">Select States</label>
-                    <select name="state_name" id="state_name" data-live-search="true" title="Select State">
+                    <select name="state_name" id="state_name" data-live-search="true" title="Select State" required>
                         {%for state_id, state_name in states_info%}
                         <option value={{state_id}}>{{state_name}}</option>
                         {% endfor %}
@@ -36,17 +36,22 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="county_name" class="form-label">Select county</label>
-                    <select name="county_name" id="county_name" data-live-search="true" title="Select County">
+                    <select name="county_name" id="county_name" data-live-search="true" title="Select County" required>
                     </select>
                 </div>
                 <div class="form-group col-md-4">
                     <label for="city_name" class="form-label">Select cities</label>
-                    <select name="city_name" id="city_name" data-live-search="true" title="Select Cities">
+                    <select name="city_name" id="city_name" data-live-search="true" title="Select Cities" required>
                     </select>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Start Simulation</button>
+            <button id="start_button" type="submit" name="starbut" class="btn btn-primary">Start Simulation</button>
         </form>
+    </p>
+    <h2>
+        Result:
+    </h2>
+    <p id="sim_result">
     </p>
 </div>
 
@@ -101,6 +106,31 @@
             console.log(city_info[1])
             load_data("cityData", city_info);
         });
+
+        $("#start_button").click(function(e) {
+            console.log("button clicked");
+            console.log($("#temperature").val() )
+            e.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "/",
+                dataType: "json",
+                data: { 
+                    temperature: $("#temperature").val(),
+                    CO2: $("#CO2").val(),
+                    fruit_per_truss: $("#fruit_per_truss").val(), // < note use of 'this' here
+                    city_id: $("#city_name").val() 
+                },
+                success: function(result) {
+                    var html="lon:" + result[0][0];
+                    $("#sim_result").html(html);
+                },
+                error: function(result) {
+                    alert('error');
+                }
+            });
+        });
+      
     });
 
 </script>

@@ -13,7 +13,24 @@ sql_path = "us_cities.sql"
 @app.route("/", methods=['POST', 'GET'])
 def home():
     if request.method == 'POST':
-        pass
+        co2 = request.form["CO2"]
+        temp = request.form["temperature"]
+        city_id = request.form["city_id"]
+        fruit_per_truss = request.form["fruit_per_truss"]
+        query_location = f"""
+            SELECT 
+                LATITUDE, LONGITUDE 
+            FROM US_CITIES 
+            WHERE ID={city_id}
+        """
+        with sqlite3.connect(db_path) as con:
+            location = pd.read_sql(query_location, con, index_col=None)
+            # lat = location.iloc[0]['LATITUDE']
+            # lon = location.iloc[0]['LONGITUDE']
+            # sim_result = str(lat) + "  " + str(lon)
+            output_array = location.to_json(orient="values")
+            print(output_array)
+            return output_array
 
     show_states_query = "SELECT ID, STATE_NAME FROM US_STATES"
     with sqlite3.connect(db_path) as con:
@@ -41,7 +58,7 @@ def select_states():
                 result = pd.read_sql(show_county_query, con, index_col=None)
                 county_name = result['COUNTY']
                 output_array = county_name.to_json(orient="values")
-
+                
         elif data_type == "cityData":
             city_info = request.form.getlist("category_id[]")
             show_city_query = f"""
