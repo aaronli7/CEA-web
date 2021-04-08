@@ -1,13 +1,14 @@
 from flask import Flask, request, render_template, jsonify
 import requests
 import sqlite3
-import time, os
+import time, os, datetime
 from tools.util import *
 from CEAsimulator.TomSim import TomSim
 
 app = Flask(__name__, template_folder="templates")
 db_path = "us_cities.db"
 sql_path = "us_cities.sql"
+date_format ="%Y-%m-%d"
 simulator_config = os.path.abspath(os.path.join(os.getcwd(), "CEAsimulator/config.ini"))
 
 @app.route("/", methods=['POST', 'GET'])
@@ -17,6 +18,14 @@ def home():
         temp = float(request.form["temperature"])
         city_id = int(request.form["city_id"])
         fruit_per_truss = int(request.form["fruit_per_truss"])
+        start_date = (request.form["start_date"])
+        end_date = (request.form["end_date"])
+        start_julian_day = datetime.datetime.strptime(start_date, date_format)
+        end_julian_day = datetime.datetime.strptime(end_date, date_format)
+
+        start_julian_day = start_julian_day.timetuple().tm_yday
+        end_julian_day = end_julian_day.timetuple().tm_yday
+        
         query_location = f"""
             SELECT 
                 LATITUDE, LONGITUDE 
