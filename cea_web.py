@@ -3,20 +3,20 @@ import requests
 import sqlite3
 import time, os
 from tools.util import *
-from CEAsimulator import TomSim
+from CEAsimulator.TomSim import TomSim
 
 app = Flask(__name__, template_folder="templates")
 db_path = "us_cities.db"
 sql_path = "us_cities.sql"
-
+simulator_config = os.path.abspath(os.path.join(os.getcwd(), "CEAsimulator/config.ini"))
 
 @app.route("/", methods=['POST', 'GET'])
 def home():
     if request.method == 'POST':
-        co2 = request.form["CO2"]
-        temp = request.form["temperature"]
-        city_id = request.form["city_id"]
-        fruit_per_truss = request.form["fruit_per_truss"]
+        co2 = float(request.form["CO2"])
+        temp = float(request.form["temperature"])
+        city_id = int(request.form["city_id"])
+        fruit_per_truss = int(request.form["fruit_per_truss"])
         query_location = f"""
             SELECT 
                 LATITUDE, LONGITUDE 
@@ -25,8 +25,11 @@ def home():
         """
         with sqlite3.connect(db_path) as con:
             location = pd.read_sql(query_location, con, index_col=None)
+            lat = location.iloc[0]["LATITUDE"]
+            lon = location.iloc[0]["LONGITUDE"]
             output_array = location.to_json(orient="values")
-            print(output_array)
+            sim = TomSim(co2=co2, temperature=temp, fruit_per_truss=fruit_per_truss, lon=lon, lat=lat, debug=False)
+            sim.start_simulation(config_path=simulator_config)
             return output_array
 
     show_states_query = "SELECT ID, STATE_NAME FROM US_STATES"

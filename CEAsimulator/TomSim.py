@@ -105,7 +105,9 @@ class TomSim:
         return
 
     def read_config(self, filename):
-        config_file = os.path.abspath(os.path.join(os.getcwd(), filename))
+        # config_file = os.path.abspath(os.path.join(os.getcwd(), filename))
+        # print(config_file)
+        config_file = filename
         cf = configparser.ConfigParser()
         cf.read(config_file)
         print("Config file path:", config_file) if self.dbg else None
@@ -234,7 +236,8 @@ class TomSim:
         self._sink_factor = json.loads(cf.get("simulation", "sink_factor"))
 
     def read_greenhouse_config(self, filename):
-        config_file = os.path.abspath(os.path.join(os.getcwd(), filename))
+        # config_file = os.path.abspath(os.path.join(os.getcwd(), filename))
+        config_file = filename
         cf = configparser.ConfigParser()
         cf.read(config_file)
         self.diffuse_rad_transmission = json.loads(
@@ -1248,10 +1251,10 @@ class TomSim:
         self.icount1 += 1
         return
 
-    def start_simulation(self):
+    def start_simulation(self, config_path):
         self.read_radiation()
-        self.read_config("config.ini")
-        self.read_greenhouse_config("config.ini")
+        self.read_config(config_path)
+        self.read_greenhouse_config(config_path)
         self.pre_simulation()
 
         print("simulation start...") if self.dbg else None
