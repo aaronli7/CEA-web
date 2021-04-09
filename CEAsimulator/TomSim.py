@@ -1199,7 +1199,7 @@ class TomSim:
         if self._start_time == self.time:
             row_header = [
                 "time (jday)",
-                "fruit_dry_matter",
+                "fruit_dry_matter_fraction",
                 "total_veg_dry_matter",
                 "total_dry_matter",
                 "SLA",

@@ -67,6 +67,15 @@
     </p>
 </div>
 
+<!-- loading overlay -->
+<div id="overlay">
+    <div class="cv-spinner">
+        <span class="spinner"></span>
+    </div>
+</div>
+
+
+
 <script>
     $(document).ready(function(){
         $("#state_name").selectpicker();
@@ -74,7 +83,6 @@
         $("#city_name").selectpicker();
         
         function load_data(type, category_id){
-            console.log({type:type, category_id: category_id})
             $.ajax({
                 url: "/city",
                 method: "POST",
@@ -115,20 +123,22 @@
             var state_id = $("#state_name").val();
             var county_id = $("#county_name").val();
             var city_info = [state_id, county_id];
-            console.log(city_info[1])
             load_data("cityData", city_info);
         });
 
         $("#start_button").click(function(e) {
+            e.preventDefault();
             var from_date = $("#start_date").val();
             var to_date = $("#end_date").val();
             if (!$('#temperature').val() || !$('#CO2').val() || !$('#fruit_per_truss').val() || !$('#state_name').val() || !$('#county_name').val() || !$('#city_name').val() || !$('#start_date').val() || !$('#end_date').val())  {
                 alert('Empty value!');
+                return
             }
             if(Date.parse(from_date) > Date.parse(to_date)){
                 alert("Invalid Date Range");
+                return
             }
-            e.preventDefault();
+            $("#overlay").fadeIn(300);
             $.ajax({
                 type: "POST",
                 url: "/",
@@ -144,11 +154,13 @@
                 success: function(result) {
                     var html="lat:" + result[0][0] + " lon:" + result[0][1];
                     $("#sim_result").html(html);
+                    $("#overlay").fadeOut(50);
                 },
                 error: function(result) {
-                    alert('error');
+                    alert("Location not available, please try another city");
+                    $("#overlay").fadeOut(50);
                 }
-            });
+            })
         });
       
     });

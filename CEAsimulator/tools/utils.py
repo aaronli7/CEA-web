@@ -130,7 +130,6 @@ def query_ghi(lon, lat):
     }
 
     r = requests.get(url = NREL_URL, params=params)
-
     data = r.text.split("\n",2)[2] #remove the first two lines
     data = io.StringIO(data)
     df = pd.read_csv(data, sep=",")
