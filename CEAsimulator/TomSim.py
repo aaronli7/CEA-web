@@ -12,9 +12,18 @@ IAGE = [0] * 75
 class TomSim:
     """
     This class simulates the tomato production.
+
+    params:
+    - co2: CO2 in the greenhouse.
+    - temperature: temperature in the greenhouse.
+    - fruit_per_truss: number of fruits in one truss.
+    - lon: longitude of the site.
+    - lat: latitude of the site.
+    - start_date: the julian day of the simulation start date.
+    - end_date: the julian day of the simulation end date.
     """
 
-    def __init__(self, co2, temperature, fruit_per_truss, lon, lat, debug=False):
+    def __init__(self, co2, temperature, fruit_per_truss, lon, lat, start_date, end_date, debug=False):
         # user define
         self.temperature = temperature
         self.co2 = co2
@@ -22,6 +31,8 @@ class TomSim:
         self.fruit_per_truss = fruit_per_truss
         self.lon = lon
         self.lat = lat
+        self._start_time = start_date
+        self._finish_time = end_date
 
         self._hourly_radiation_table = np.zeros((730, 24))
         self._current_day_radiation = np.zeros(24)
@@ -157,8 +168,8 @@ class TomSim:
             cf.get("simulation", "init_dry_weight_roots")
         )
         self._plant_density = json.loads(cf.get("simulation", "plant_density"))
-        self._start_time = json.loads(cf.get("simulation", "start_time"))
-        self._finish_time = json.loads(cf.get("simulation", "finish_time"))
+        # self._start_time = json.loads(cf.get("simulation", "start_time"))
+        # self._finish_time = json.loads(cf.get("simulation", "finish_time"))
         self._sim_time_step = json.loads(cf.get("simulation", "sim_time_step"))
         self._output_time_step = json.loads(cf.get("simulation", "output_time_step"))
         self._frac_dry_weight_leaves = json.loads(
