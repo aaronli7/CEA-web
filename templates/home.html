@@ -152,7 +152,7 @@
                     end_date: $("#end_date").val()
                 },
                 success: function(result) {
-                    var html="lat:" + result[0][0] + " lon:" + result[0][1];
+                    var html="City location: lat:" + result[0][0] + " lon:" + result[0][1];
                     $("#sim_result").html(html);
                     $("#overlay").fadeOut(50);
                 },
