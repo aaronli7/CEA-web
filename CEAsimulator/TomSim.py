@@ -6,7 +6,7 @@ from .tools.utils import *
 # constant definition
 PI = 3.141592654
 LAT = 52.0
-IAGE = [0] * 75
+# self.IAGE = [0] * 75
 
 
 class TomSim:
@@ -34,6 +34,7 @@ class TomSim:
         self._start_time = start_date
         self._finish_time = end_date
 
+        self.IAGE = [0] * 75
         self._hourly_radiation_table = np.zeros((730, 24))
         self._current_day_radiation = np.zeros(24)
         self._hourly_temperature_table = np.full((730, 24), self.temperature)
@@ -777,21 +778,21 @@ class TomSim:
         self._initial_truss += flowering_rate
         self.truss = int(self._initial_truss)
 
-        # Calculation of sinkstrength of individual trusses if IAGE(I) < 1 truss was at anthesis today -> sinkstrength = 0 if ITG(I) = 1 truss was already harvested -> sinkstrength = 0
+        # Calculation of sinkstrength of individual trusses if self.IAGE(I) < 1 truss was at anthesis today -> sinkstrength = 0 if ITG(I) = 1 truss was already harvested -> sinkstrength = 0
 
         self.total = 0
         self.total_veg = 0
 
-        if (self.truss < 1) or ((self.truss == 1) and (IAGE[0] < 1)):
+        if (self.truss < 1) or ((self.truss == 1) and (self.IAGE[0] < 1)):
             self.frac_dry_matter_leaves = self._frac_dry_weight_leaves
             self.frac_dry_matter_stems = 1 - self._frac_dry_weight_leaves
             self.frac_dry_matter_organs = 0
             if self.truss == 1:
-                IAGE[0] = IAGE[0] + 1
+                self.IAGE[0] = self.IAGE[0] + 1
         else:
             self.num_veg_units = self.truss + 3
             for i in range(self.truss):
-                if (self.if_truss_harvested[i] == 1) or (IAGE[i] < 1):
+                if (self.if_truss_harvested[i] == 1) or (self.IAGE[i] < 1):
                     self.sink[i] = 0
                 else:
                     self.dev_stages_per_truss[i] = (
@@ -809,7 +810,7 @@ class TomSim:
                         * self.cor_fruit_dev
                     )
                     self.temp_array[i] += self.corrected_temperature
-                    self.avtemp_truss[i] = self.temp_array[i] / IAGE[i]
+                    self.avtemp_truss[i] = self.temp_array[i] / self.IAGE[i]
 
                     # Calculation of truss sink strength
                     Y = A * (
@@ -847,9 +848,9 @@ class TomSim:
                 self.total += self.sink[i]
                 # print("total before:", self.total)
 
-            # print("Iage:", IAGE[0])
+            # print("self.IAGE:", self.IAGE[0])
             # time.sleep(5)
-            if IAGE[0] == 1:
+            if self.IAGE[0] == 1:
                 self.veg_dev[0] = 40
                 self.veg_dev[1] = 24
                 self.veg_dev[2] = 12
@@ -934,11 +935,11 @@ class TomSim:
 
                     if self.dbg:
                         print(
-                            f"Truss number:{i}, day: {self.day}, avtemp_truss: {self.avtemp_truss[i]}, IAGE: {IAGE[i]}"
+                            f"Truss number:{i}, day: {self.day}, avtemp_truss: {self.avtemp_truss[i]}, number of days from anthesis to harvest: {self.IAGE[i]}"
                         )
-                    writer.writerow([i + 1, self.day, self.avtemp_truss[i], IAGE[i]])
+                    writer.writerow([i + 1, self.day, self.avtemp_truss[i], self.IAGE[i]])
                 else:
-                    IAGE[i] += 1
+                    self.IAGE[i] += 1
 
             self.frac_dry_matter_leaves = (
                 self.total_veg / self.total * self._frac_dry_weight_leaves
@@ -1022,7 +1023,7 @@ class TomSim:
         # Calculation of growth of vegetative plant parts
         self.truss = int(self._initial_truss)
         
-        if (self.truss < 1) or (self.truss == 1) and (IAGE[0] <= 1):
+        if (self.truss < 1) or (self.truss == 1) and (self.IAGE[0] <= 1):
             self.leaves_growth = self.frac_dry_matter_leaves * self.total_growth_rate
             self.stems_growth = self.frac_dry_matter_stems * self.total_growth_rate
             self.roots_growth = self.frac_dry_matter_roots * self.total_growth_rate
@@ -1141,9 +1142,9 @@ class TomSim:
                 "dry_weight (leave + stem) (g/m2)",
                 "dry_weight (organ) (g/m2)",
                 "dry_weight (root) (g/m2)",
-                "existing_dry_weight (leave) (g/m2)",
-                "existing_dry_weight (stem) (g/m2)",
-                "existing_dry_weight (organ) (g/m2)",
+                "excluding_dry_weight (leave) (g/m2)",
+                "excluding_dry_weight (stem) (g/m2)",
+                "excluding_dry_weight (organ) (g/m2)",
                 "daily_greenhouse_diffuse_radiation (MJ/m2/d)",
                 "daily_greenhouse_direct_radiation (MJ/m2/d)",
             ]
@@ -1153,7 +1154,7 @@ class TomSim:
                 "truss_number",
                 "day",
                 "average_temperature",
-                "IAGE",
+                " number of days from anthesis to harvest",
             ]
             fruit_dev_writer.writerow(fruit_dev_header)
 
@@ -1408,6 +1409,11 @@ class TomSim:
 
         f_fruitdev.close()
 
+        total_dry_yield = self.total_dry_weight - (self._init_dry_weight_roots + self.dry_weight_stems_existing + self.dry_weight_leaves_existing + self.dry_weight_organs_existing)
+        
+        # the tomatos contain approximately %94 water.
+        fresh_yield = total_dry_yield / 0.06
+
         print("simulation is over...") if self.dbg else None
 
-        return
+        return fresh_yield

@@ -36,10 +36,15 @@ def home():
             location = pd.read_sql(query_location, con, index_col=None)
             lat = location.iloc[0]["LATITUDE"]
             lon = location.iloc[0]["LONGITUDE"]
-            output_array = location.to_json(orient="values")
+            # output_array = location.to_json(orient="values")
             sim = TomSim(co2=co2, temperature=temp, fruit_per_truss=fruit_per_truss, lon=lon, lat=lat, start_date=start_julian_day, end_date=end_julian_day, debug=False)
-            sim.start_simulation(config_path=simulator_config)
-            return output_array
+            fresh_yield = sim.start_simulation(config_path=simulator_config)
+            
+            return jsonify(
+                latitude = lat,
+                longitude = lon,
+                total_yield = fresh_yield
+            )
 
     show_states_query = "SELECT ID, STATE_NAME FROM US_STATES"
     with sqlite3.connect(db_path) as con:
