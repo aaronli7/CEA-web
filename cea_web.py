@@ -38,7 +38,7 @@ def home():
             lon = location.iloc[0]["LONGITUDE"]
             # output_array = location.to_json(orient="values")
             sim = TomSim(co2=co2, temperature=temp, fruit_per_truss=fruit_per_truss, lon=lon, lat=lat, start_date=start_julian_day, end_date=end_julian_day, debug=False)
-            fresh_yield = sim.start_simulation(config_path=simulator_config)
+            fresh_yield, dryweight_distri, truss_growh= sim.start_simulation(config_path=simulator_config)
             
             return jsonify(
                 latitude = lat,

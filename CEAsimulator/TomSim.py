@@ -1281,6 +1281,7 @@ class TomSim:
         growth_writer = csv.writer(f_growth)
         distri_writer = csv.writer(f_distri)
         fruitdev_writer = csv.writer(f_fruitdev)
+        self.truss_counter = []
         while self.time <= self._finish_time:
             self.itime = self.time
 
@@ -1373,7 +1374,7 @@ class TomSim:
 
             self.growth_rate = self.total_growth_rate
             self.print_distribution(distri_writer)
-
+            self.truss_counter.append(self._initial_truss)
             self.time += self._sim_time_step
 
         f_growth.close()
@@ -1410,10 +1411,25 @@ class TomSim:
         f_fruitdev.close()
 
         total_dry_yield = self.total_dry_weight - (self._init_dry_weight_roots + self.dry_weight_stems_existing + self.dry_weight_leaves_existing + self.dry_weight_organs_existing)
-        
+
+        days = [*range(1, self._finish_time - self._start_time + 2)]
+        print(days)
+        print(self.truss_counter)
+        # the dry weight distribution pie chart data
+        dry_weight_distribution = {
+            "leaves":self.dry_weight_leaves_existing / self.total_dry_weight,
+            "organs":self.dry_weight_organs_existing / self.total_dry_weight,
+            "stems":self.dry_weight_stems_existing / self.total_dry_weight,
+            "roots":self._init_dry_weight_roots / self.total_dry_weight,
+            "yield":total_dry_yield / self.total_dry_weight
+        }
+        truss_growh = {
+            "days":days,
+            "truss_number": self.truss_counter
+        }
         # the tomatos contain approximately %94 water.
         fresh_yield = total_dry_yield / 0.06
 
         print("simulation is over...") if self.dbg else None
 
-        return fresh_yield
+        return fresh_yield, dry_weight_distribution, truss_growh
