@@ -1413,8 +1413,6 @@ class TomSim:
         total_dry_yield = self.total_dry_weight - (self._init_dry_weight_roots + self.dry_weight_stems_existing + self.dry_weight_leaves_existing + self.dry_weight_organs_existing)
 
         days = [*range(1, self._finish_time - self._start_time + 2)]
-        print(days)
-        print(self.truss_counter)
         # the dry weight distribution pie chart data
         dry_weight_distribution = {
             "leaves":self.dry_weight_leaves_existing / self.total_dry_weight,
