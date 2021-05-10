@@ -38,13 +38,33 @@ def home():
             lon = location.iloc[0]["LONGITUDE"]
             # output_array = location.to_json(orient="values")
             sim = TomSim(co2=co2, temperature=temp, fruit_per_truss=fruit_per_truss, lon=lon, lat=lat, start_date=start_julian_day, end_date=end_julian_day, debug=False)
-            fresh_yield, dryweight_distri, truss_growh= sim.start_simulation(config_path=simulator_config)
+            fresh_yield, dryweight_distribution, truss_growth = sim.start_simulation(config_path=simulator_config)
+            
+            #resp = jsonify(truss_growth)
+            #resp.status_code = 200
+            #print(resp)
+            #print(type(resp))
+            #print(dryweight_distribution[0])
+           # print(dryweight_distribution[1])
+            print(dryweight_distribution['stems'])
+            temp = {'lattitude': lat,
+            'longitude': lon,
+            'total_yield':fresh_yield}
+            #print(temp)
             
             return jsonify(
                 latitude = lat,
                 longitude = lon,
-                total_yield = fresh_yield
+                total_yield = fresh_yield,
+                leaves = dryweight_distribution['leaves'],
+                organs = dryweight_distribution['organs'],
+                stems = dryweight_distribution['stems'],
+                roots = dryweight_distribution['roots'],                
+                yielded = dryweight_distribution['yield']
             )
+            #distribution1 = jsonify(dryweight_distribution)
+            #return distribution1
+
 
     show_states_query = "SELECT ID, STATE_NAME FROM US_STATES"
     with sqlite3.connect(db_path) as con:
