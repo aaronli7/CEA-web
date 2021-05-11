@@ -30,11 +30,11 @@ def signin():
             states_id = result['ID']
             states_info = zip(states_id, states_name)
             print(pdtemp)
-        return render_template("home.html", title="CEA Simulator Home Page", states_info=states_info) #redirect("/growthSimulation")
+        return redirect("/growthSimulation")
     
-    return render_template("signin.html", title="CEA Simulator Signin Page")
+    return render_template("signup.html", title="CEA Simulator Signin Page")
 
-@app.route("/", methods=['POST', 'GET'])
+@app.route("/growthSimulation", methods=['POST', 'GET'])
 def home():
     if request.method == 'POST':
         co2 = float(request.form["CO2"])
