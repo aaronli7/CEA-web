@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify, redirect, flash
+from flask import Flask, request, render_template, jsonify, redirect, flash, send_from_directory
 #from flask_basicauth import BasicAuth
 from werkzeug.security import generate_password_hash, check_password_hash
 #import time, requests
@@ -7,7 +7,7 @@ import os, datetime
 from tools.util import *
 from CEAsimulator.TomSim import TomSim
 
-UPLOAD_FOLDER = '/home/me/Desktop/projects/flask/uploads'
+UPLOAD_FOLDER = os.path.abspath(os.path.join(os.getcwd(), "static"))
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__, template_folder="templates")
@@ -36,12 +36,12 @@ def signup():
         print(password)
         imgsave = ''
         uploaded_file = request.files['file']
-        if uploaded_file.filename != '':
-            #filename = secure_filename(uploaded_file.filename)
+        
+        if uploaded_file and allowed_file(uploaded_file.filename):
             file_ext = os.path.splitext(uploaded_file.filename)[1]
             imgsave = str(username) + str(file_ext)
             print(imgsave)
-            uploaded_file.save(imgsave)
+            uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], imgsave))        
             
         with sqlite3.connect(db_path) as con:
             query = "SELECT userid FROM users where username ='" + str(username) + "'"
@@ -50,15 +50,11 @@ def signup():
             if len(result) == 0:
                 con.execute("INSERT INTO users(username, nameofUser, password) VALUES (?, ?, ?)",(username, nameofUser, password))
                 con.commit()
-                return render_template("signupSuccess.html", title="CEA Simulator signup Success", name=nameofUser, file=imgsave)
+                return render_template("signupSuccess.html", title="CEA Simulator Signup Successful", name = nameofUser, img_name = imgsave)#send_from_directory(UPLOAD_FOLDER, imgsave)
             else:
                 flash('User already exists')
-                #return render_template("signup.html", title="CEA Simulator signup Page")
-            
-            #temp = "SELECT * FROM users"
-            #pdtemp = pd.read_sql(temp, con, index_col=None)
-            #print(pdtemp)
-        
+                return render_template("signup.html", title="CEA Simulator signup Page")
+                    
 
     return render_template("signup.html", title="CEA Simulator signup Page")
 
@@ -84,13 +80,12 @@ def login():
             user = result.iloc[0]['username']
             pwd = result.iloc[0]['password']
             
-            if not check_password_hash(pwd,passwordcheck):
+            if not check_password_hash(pwd,passwordcheck) or len(result)==0:
                 #print(pwd)
                 flash('Please check your login details and try again.')
                 print("Test")
                 return redirect("/login")
             else:
-                login_user(user, remember=remember)
                 return redirect("/growthSimulation")
     return render_template("login.html", title="CEA Simulator Signup Successful")
 
