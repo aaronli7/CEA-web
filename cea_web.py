@@ -50,7 +50,7 @@ def signup():
             if len(result) == 0:
                 con.execute("INSERT INTO users(username, nameofUser, password) VALUES (?, ?, ?)",(username, nameofUser, password))
                 con.commit()
-                return render_template("signupSuccess.html", title="CEA Simulator Signup Successful", name = nameofUser, img_name = imgsave)#send_from_directory(UPLOAD_FOLDER, imgsave)
+                return render_template("signupSuccess.html", title="CEA Simulator Signup Successful", name = nameofUser, filename = imgsave)#send_from_directory(UPLOAD_FOLDER, imgsave)
             else:
                 flash('User already exists')
                 return render_template("signup.html", title="CEA Simulator signup Page")
