@@ -26,6 +26,10 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
+@app.route("/")
+def startpage():
+   return render_template("home.html", title="CEA Simulator Home")
+    
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
     if request.method == 'POST':
@@ -135,7 +139,7 @@ def home():
         states_name = result['STATE_NAME']
         states_id = result['ID']
         states_info = zip(states_id, states_name)
-    return render_template("home.html", title="CEA Simulator Home Page", states_info=states_info)
+    return render_template("growthSimulate.html", title="CEA Simulator Page", states_info=states_info)
 
 @app.route("/city", methods=["POST", "GET"])
 def select_states():
