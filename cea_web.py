@@ -6,7 +6,6 @@ import sqlite3
 import os, datetime
 from tools.util import *
 from CEAsimulator.TomSim import TomSim
-from flask_login import login_user, login_required, LoginManager
 
 UPLOAD_FOLDER = '/home/me/Desktop/projects/flask/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
