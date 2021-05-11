@@ -15,10 +15,14 @@ simulator_config = os.path.abspath(os.path.join(os.getcwd(), "CEAsimulator/confi
 def signin():
     if request.method == 'POST':
         username = request.form["username"]
+        nameofUser = request.form["name"]
         password = request.form["password"]
+        uploaded_file = request.files['file']
+        if uploaded_file.filename != '':
+            uploaded_file.save(uploaded_file.filename)
         with sqlite3.connect(db_path) as con, open(sql_path) as script:
             #con.executescript(script.read())
-            #con.execute("INSERT INTO users(username, password) VALUES (?, ?)",(username, password))
+            con.execute("INSERT INTO users(username, nameofUser, password) VALUES (?, ?, ?)",(username, nameofUser, password))
             temp = "SELECT * FROM users"
             pdtemp = pd.read_sql(temp, con, index_col=None)
             print(pdtemp)

@@ -6,8 +6,9 @@ DROP TABLE IF EXISTS US_STATES;
 
 CREATE TABLE users (
     userid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-    username TEXT,
-    password TEXT
+    username TEXT UNIQUE NOT NULL,
+	NameofUser TEXT NOT NULL, 
+    password TEXT NOT NULL
 );
 
 CREATE TABLE US_STATES (
