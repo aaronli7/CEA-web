@@ -6,24 +6,26 @@ import sqlite3
 import os, datetime
 from tools.util import *
 from CEAsimulator.TomSim import TomSim
-import shutil
+from flask_login import login_user, login_required, LoginManager
+
+UPLOAD_FOLDER = '/home/me/Desktop/projects/flask/uploads'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 app = Flask(__name__, template_folder="templates")
 app.config['SECRET_KEY'] = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8' #Flask secret key
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 #limit upoad size to 1mb
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# blueprint for auth routes in our app
-#from .auth import auth as auth_blueprint
-#app.register_blueprint(auth_blueprint)
-
-# blueprint for non-auth parts of app
-#from .main import main as main_blueprint
-#app.register_blueprint(main_blueprint)
 
 db_path = "us_cities.db"
 sql_path = "us_cities.sql"
 date_format ="%Y-%m-%d"
 simulator_config = os.path.abspath(os.path.join(os.getcwd(), "CEAsimulator/config.ini"))
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():
@@ -68,7 +70,33 @@ def signupSuccess():
         return redirect("/growthSimulation")
     return render_template("signupSuccess.html", title="CEA Simulator Signup Successful")
 
+@app.route("/login", methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        username = request.form["username"]
+        passwordcheck = request.form["password"]
+        check = generate_password_hash(passwordcheck, method='sha256')
+        print(passwordcheck)
+        print(check)
+            
+        with sqlite3.connect(db_path) as con:
+            query = "SELECT * FROM users where username ='" + str(username) + "'"
+            result = pd.read_sql(query, con, index_col=None)
+            user = result.iloc[0]['username']
+            pwd = result.iloc[0]['password']
+            
+            if not check_password_hash(pwd,passwordcheck):
+                #print(pwd)
+                flash('Please check your login details and try again.')
+                print("Test")
+                return redirect("/login")
+            else:
+                login_user(user, remember=remember)
+                return redirect("/growthSimulation")
+    return render_template("login.html", title="CEA Simulator Signup Successful")
+
 @app.route("/growthSimulation", methods=['POST', 'GET'])
+#@login_required
 def home():
     if request.method == 'POST':
         co2 = float(request.form["CO2"])
