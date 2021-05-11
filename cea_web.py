@@ -11,7 +11,7 @@ sql_path = "us_cities.sql"
 date_format ="%Y-%m-%d"
 simulator_config = os.path.abspath(os.path.join(os.getcwd(), "CEAsimulator/config.ini"))
 
-@app.route("/", methods=['POST', 'GET'])
+@app.route("/signup", methods=['POST', 'GET'])
 def signin():
     if request.method == 'POST':
         username = request.form["username"]
@@ -20,17 +20,21 @@ def signin():
         uploaded_file = request.files['file']
         if uploaded_file.filename != '':
             uploaded_file.save(uploaded_file.filename)
-        with sqlite3.connect(db_path) as con, open(sql_path) as script:
-            #con.executescript(script.read())
+        with sqlite3.connect(db_path) as con:
             con.execute("INSERT INTO users(username, nameofUser, password) VALUES (?, ?, ?)",(username, nameofUser, password))
             temp = "SELECT * FROM users"
             pdtemp = pd.read_sql(temp, con, index_col=None)
+            show_states_query = "SELECT ID, STATE_NAME FROM US_STATES"
+            result = pd.read_sql(show_states_query, con, index_col=None)
+            states_name = result['STATE_NAME']
+            states_id = result['ID']
+            states_info = zip(states_id, states_name)
             print(pdtemp)
-        return redirect("/growthSimulation")
+        return render_template("home.html", title="CEA Simulator Home Page", states_info=states_info) #redirect("/growthSimulation")
     
     return render_template("signin.html", title="CEA Simulator Signin Page")
 
-@app.route("/growthSimulation", methods=['POST', 'GET'])
+@app.route("/", methods=['POST', 'GET'])
 def home():
     if request.method == 'POST':
         co2 = float(request.form["CO2"])
