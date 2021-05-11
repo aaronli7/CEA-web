@@ -76,17 +76,21 @@ def login():
             
         with sqlite3.connect(db_path) as con:
             query = "SELECT * FROM users where username ='" + str(username) + "'"
-            result = pd.read_sql(query, con, index_col=None)
-            user = result.iloc[0]['username']
-            pwd = result.iloc[0]['password']
+            try:
+                result = pd.read_sql(query, con, index_col=None)
+                user = result.iloc[0]['username']
+                pwd = result.iloc[0]['password']
             
-            if not check_password_hash(pwd,passwordcheck) or len(result)==0:
+                if not check_password_hash(pwd,passwordcheck):
                 #print(pwd)
-                flash('Please check your login details and try again.')
-                print("Test")
-                return redirect("/login")
-            else:
-                return redirect("/growthSimulation")
+                    flash('Please check your login details and try again.')
+                    print("Test")
+                    return redirect("/login")
+                else:
+                    return redirect("/growthSimulation")
+            except:
+                 flash('Invalid User')
+
     return render_template("login.html", title="CEA Simulator Signup Successful")
 
 @app.route("/growthSimulation", methods=['POST', 'GET'])
