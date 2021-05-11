@@ -12,27 +12,30 @@ date_format ="%Y-%m-%d"
 simulator_config = os.path.abspath(os.path.join(os.getcwd(), "CEAsimulator/config.ini"))
 
 @app.route("/signup", methods=['POST', 'GET'])
-def signin():
+def signup():
     if request.method == 'POST':
         username = request.form["username"]
         nameofUser = request.form["name"]
         password = request.form["password"]
         uploaded_file = request.files['file']
         if uploaded_file.filename != '':
+            #filename = secure_filename(uploaded_file.filename)
             uploaded_file.save(uploaded_file.filename)
         with sqlite3.connect(db_path) as con:
             con.execute("INSERT INTO users(username, nameofUser, password) VALUES (?, ?, ?)",(username, nameofUser, password))
             temp = "SELECT * FROM users"
             pdtemp = pd.read_sql(temp, con, index_col=None)
-            show_states_query = "SELECT ID, STATE_NAME FROM US_STATES"
-            result = pd.read_sql(show_states_query, con, index_col=None)
-            states_name = result['STATE_NAME']
-            states_id = result['ID']
-            states_info = zip(states_id, states_name)
             print(pdtemp)
+        return render_template("signupSuccess.html", title="CEA Simulator Signup Successful", name = nameofUser, file = uploaded_file)
+
+    return render_template("signup.html", title="CEA Simulator signup Page")
+
+@app.route("/signupSuccess", methods=['POST', 'GET'])
+def signupSuccess():
+    if request.method == 'POST':
+        
         return redirect("/growthSimulation")
-    
-    return render_template("signup.html", title="CEA Simulator Signin Page")
+    return render_template("signupSuccess.html", title="CEA Simulator Signup Successful")
 
 @app.route("/growthSimulation", methods=['POST', 'GET'])
 def home():
