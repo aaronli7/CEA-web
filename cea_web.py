@@ -90,7 +90,6 @@ def login():
                 print("Test")
                 return redirect("/login")
             else:
-                login_user(user, remember=remember)
                 return redirect("/growthSimulation")
     return render_template("login.html", title="CEA Simulator Signup Successful")
 
