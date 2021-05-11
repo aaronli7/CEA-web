@@ -6,14 +6,16 @@ In this project, we built a web application for users to simulate the tomato gro
 
 By inputing the parameters such as temperature, CO2, simulation time range and location, users can get the numerical and visulization result including **total yield of the tomatoes**, **dry weight distribution** and **Growth of truss number**.
 
+Please visit
+
 ## Components
 **database tables**:
 - users: storing user information
 - cities and states: storing all cities in the United States with coordinates.
 
-**Signup page**: For new user to sign up.
+**Signup page**: For new user to sign up. <url>/signup
 
-**Login page**: For user to login, a new session would be created after successfully login.
+**Login page**: For user to login, a new session would be created after successfully login. <url>/login
 
 **Main page**: For authenticated user to simulate the tomato growth and check the result. 
 
