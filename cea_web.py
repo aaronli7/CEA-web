@@ -40,7 +40,6 @@ def signup():
         if uploaded_file and allowed_file(uploaded_file.filename):
             file_ext = os.path.splitext(uploaded_file.filename)[1]
             imgsave = str(username) + str(file_ext)
-            print(imgsave)
             uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], imgsave))        
             
         with sqlite3.connect(db_path) as con:
@@ -70,21 +69,15 @@ def login():
     if request.method == 'POST':
         username = request.form["username"]
         passwordcheck = request.form["password"]
-        check = generate_password_hash(passwordcheck, method='sha256')
-        print(passwordcheck)
-        print(check)
-            
+
         with sqlite3.connect(db_path) as con:
             query = "SELECT * FROM users where username ='" + str(username) + "'"
             try:
                 result = pd.read_sql(query, con, index_col=None)
-                user = result.iloc[0]['username']
                 pwd = result.iloc[0]['password']
             
                 if not check_password_hash(pwd,passwordcheck):
-                #print(pwd)
                     flash('Please check your login details and try again.')
-                    print("Test")
                     return redirect("/login")
                 else:
                     return redirect("/growthSimulation")
@@ -94,7 +87,6 @@ def login():
     return render_template("login.html", title="CEA Simulator Signup Successful")
 
 @app.route("/growthSimulation", methods=['POST', 'GET'])
-#@login_required
 def home():
     if request.method == 'POST':
         co2 = float(request.form["CO2"])
