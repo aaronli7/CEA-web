@@ -1,11 +1,25 @@
-from flask import Flask, request, render_template, jsonify, redirect
-import requests
+from flask import Flask, request, render_template, jsonify, redirect, flash
+#from flask_basicauth import BasicAuth
+from werkzeug.security import generate_password_hash, check_password_hash
+#import time, requests
 import sqlite3
-import time, os, datetime
+import os, datetime
 from tools.util import *
 from CEAsimulator.TomSim import TomSim
+import shutil
 
 app = Flask(__name__, template_folder="templates")
+app.config['SECRET_KEY'] = '\xfd{H\xe5<\x95\xf9\xe3\x96.5\xd1\x01O<!\xd5\xa2\xa0\x9fR"\xa1\xa8' #Flask secret key
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024 #limit upoad size to 1mb
+
+# blueprint for auth routes in our app
+#from .auth import auth as auth_blueprint
+#app.register_blueprint(auth_blueprint)
+
+# blueprint for non-auth parts of app
+#from .main import main as main_blueprint
+#app.register_blueprint(main_blueprint)
+
 db_path = "us_cities.db"
 sql_path = "us_cities.sql"
 date_format ="%Y-%m-%d"
@@ -16,17 +30,34 @@ def signup():
     if request.method == 'POST':
         username = request.form["username"]
         nameofUser = request.form["name"]
-        password = request.form["password"]
+        passwordtemp = request.form["password"]
+        password = generate_password_hash(passwordtemp, method='sha256')
+        print(password)
+        imgsave = ''
         uploaded_file = request.files['file']
         if uploaded_file.filename != '':
             #filename = secure_filename(uploaded_file.filename)
-            uploaded_file.save(uploaded_file.filename)
+            file_ext = os.path.splitext(uploaded_file.filename)[1]
+            imgsave = str(username) + str(file_ext)
+            print(imgsave)
+            uploaded_file.save(imgsave)
+            
         with sqlite3.connect(db_path) as con:
-            con.execute("INSERT INTO users(username, nameofUser, password) VALUES (?, ?, ?)",(username, nameofUser, password))
-            temp = "SELECT * FROM users"
-            pdtemp = pd.read_sql(temp, con, index_col=None)
-            print(pdtemp)
-        return render_template("signupSuccess.html", title="CEA Simulator Signup Successful", name = nameofUser, file = uploaded_file)
+            query = "SELECT userid FROM users where username ='" + str(username) + "'"
+            result = pd.read_sql(query, con, index_col=None)
+            print(result)
+            if len(result) == 0:
+                con.execute("INSERT INTO users(username, nameofUser, password) VALUES (?, ?, ?)",(username, nameofUser, password))
+                con.commit()
+                return render_template("signupSuccess.html", title="CEA Simulator signup Success", name=nameofUser, file=imgsave)
+            else:
+                flash('User already exists')
+                #return render_template("signup.html", title="CEA Simulator signup Page")
+            
+            #temp = "SELECT * FROM users"
+            #pdtemp = pd.read_sql(temp, con, index_col=None)
+            #print(pdtemp)
+        
 
     return render_template("signup.html", title="CEA Simulator signup Page")
 
