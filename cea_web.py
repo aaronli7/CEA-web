@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, redirect
 import requests
 import sqlite3
 import time, os, datetime
@@ -12,6 +12,21 @@ date_format ="%Y-%m-%d"
 simulator_config = os.path.abspath(os.path.join(os.getcwd(), "CEAsimulator/config.ini"))
 
 @app.route("/", methods=['POST', 'GET'])
+def signin():
+    if request.method == 'POST':
+        username = request.form["username"]
+        password = request.form["password"]
+        with sqlite3.connect(db_path) as con, open(sql_path) as script:
+            #con.executescript(script.read())
+            #con.execute("INSERT INTO users(username, password) VALUES (?, ?)",(username, password))
+            temp = "SELECT * FROM users"
+            pdtemp = pd.read_sql(temp, con, index_col=None)
+            print(pdtemp)
+        return redirect("/growthSimulation")
+    
+    return render_template("signin.html", title="CEA Simulator Signin Page")
+
+@app.route("/growthSimulation", methods=['POST', 'GET'])
 def home():
     if request.method == 'POST':
         co2 = float(request.form["CO2"])
@@ -40,18 +55,6 @@ def home():
             sim = TomSim(co2=co2, temperature=temp, fruit_per_truss=fruit_per_truss, lon=lon, lat=lat, start_date=start_julian_day, end_date=end_julian_day, debug=False)
             fresh_yield, dryweight_distribution, truss_growth = sim.start_simulation(config_path=simulator_config)
             
-            #resp = jsonify(truss_growth)
-            #resp.status_code = 200
-            #print(resp)
-            #print(type(resp))
-            #print(dryweight_distribution[0])
-           # print(dryweight_distribution[1])
-            print(dryweight_distribution['stems'])
-            temp = {'lattitude': lat,
-            'longitude': lon,
-            'total_yield':fresh_yield}
-            #print(temp)
-            
             return jsonify(
                 latitude = lat,
                 longitude = lon,
@@ -62,9 +65,7 @@ def home():
                 roots = dryweight_distribution['roots'],                
                 yielded = dryweight_distribution['yield']
             )
-            #distribution1 = jsonify(dryweight_distribution)
-            #return distribution1
-
+            
 
     show_states_query = "SELECT ID, STATE_NAME FROM US_STATES"
     with sqlite3.connect(db_path) as con:
