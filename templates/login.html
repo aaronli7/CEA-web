@@ -1,9 +1,7 @@
 {% extends "main.html" %}
 
 {% block content %}
-<div class="column is-4 is-offset-4">
-    <h3 class="title">Login</h3>
-    {% with messages = get_flashed_messages() %}
+{% with messages = get_flashed_messages() %}
   {% if messages %}
     <ul class=flashes>
     {% for message in messages %}
@@ -13,22 +11,21 @@
   {% endif %}
 {% endwith %}
 <br><br>
-    <div class="box">
-        <form method="POST" action="/login" enctype="multipart/form-data">
-            <div class="field">
-                <div class="control">
-                    Username: <input class="input is-large" type="text" name="username" placeholder="Username" autofocus="">
-                </div>
-            </div>
-
-            <div class="field">
-                <div class="control">
-                    Password: <input class="input is-large" type="password" name="password" placeholder="Your Password">
-                </div>
-            </div>
-            
-            <button class="button is-block is-info is-large is-fullwidth">Login</button>
-        </form>
-    </div>
+<div class="container">
+    <h3 class="title">Login</h3>
+    <form method="POST" action="/login" enctype="multipart/form-data">
+        <div class="form-group col-md-4">
+            <label for="inputUsername">Username</label>
+            <input class="form-control input is-large" type="text" name="username" placeholder="Username" autofocus="">
+        </div>
+    
+        <div class="form-group col-md-4">
+            <label for="inputUsername">Password</label>
+            <input class="form-control input is-large" type="password" name="password" placeholder="Your Password">
+        </div>
+        
+        <button class="btn btn-primary is-block is-info is-large is-fullwidth">Login</button>
+    </form>
 </div>
+
 {% endblock %}
