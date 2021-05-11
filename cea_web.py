@@ -70,11 +70,13 @@ def home():
                 latitude = lat,
                 longitude = lon,
                 total_yield = fresh_yield,
-                leaves = dryweight_distribution['leaves'],
-                organs = dryweight_distribution['organs'],
-                stems = dryweight_distribution['stems'],
-                roots = dryweight_distribution['roots'],                
-                yielded = dryweight_distribution['yield']
+                leaves = dryweight_distribution["leaves"],
+                organs = dryweight_distribution["organs"],
+                stems = dryweight_distribution["stems"],
+                roots = dryweight_distribution["roots"],                
+                yielded = dryweight_distribution["yield"],
+                days = truss_growth["days"],
+                truss_num = truss_growth["truss_number"]
             )
             
 

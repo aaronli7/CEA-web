@@ -5,6 +5,15 @@
     .form-group{
         height:25px;
     }
+    .float-container {
+        padding: 5px;
+    }
+
+    .float-child {
+        width: 50%;
+        float: left;
+        padding: 5px;
+    }  
 </style>
 
 <div class="container">
@@ -73,7 +82,17 @@
     </h2>
     <p id="sim_result"></p>
     <p id="yield"></p>
-    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    
+    <div class="float-container">
+        <div class="float-child">
+            <div class="chartColumn" id="chartContainer" style="height: 370px; width: 100%;"></div>
+        </div>
+        
+        <div class="float-child">
+            <div class="chartColumn" id="lineChartContainer" style="height: 370px; width: 100%;"></div>
+        </div>
+    </div>
+
         
 </div>
 
@@ -168,16 +187,46 @@
 
                     $("#sim_result").html(html_location);
                     $("#yield").html(html_yield);
+
+                    
+                    trussData = [];
+                    count = result['days'].length
+                    for (var i = 0; i < count; i +=1){
+                        trussData.push({
+                            x: result['days'][i],
+                            y: result['truss_num'][i]
+                        });
+                    }
+                    // Line chart
+                    var lineChart = {
+                        theme: "light2",
+                        title: {
+                            text: "truss number growth"
+                        },
+                        axisX: {
+                                title: "number of days",
+                        },
+                        axisY:{
+                            title: "Truss number",
+                            includeZero: true,
+                            valueFormatString: "#0"
+                        },
+                        data:[{
+                            type: "line",
+                            dataPoints: trussData,
+                        }]
+                    }
+                    // pie chart
                     var options = {
                         title: {
-                            text: "Dry weight"
+                            text: "Dry weight distribution"
                         },
                         data: [{
                             type: "pie",
                             startAngle: 45,
 			                showInLegend: "true",
                             legendText: "{label}",
-                            indexLabel: "{label} ({y})",
+                            indexLabel: "{label}: #percent%",
                             yValueFormatString:"#,##0.#"%"",
                             dataPoints: [{ label: "Leaves", y: result['leaves'] },
                                 { label: "Stems", y: result['stems'] },
@@ -188,6 +237,7 @@
                                 }]
                         };
                     $("#chartContainer").CanvasJSChart(options);
+                    $("#lineChartContainer").CanvasJSChart(lineChart);
                     $("#overlay").fadeOut(50);
                 },
                 error: function(result) {
@@ -196,11 +246,6 @@
                 }
             })
         });
-
-
-      
     });
-
 </script>
-
 {% endblock %}
