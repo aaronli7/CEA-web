@@ -13,7 +13,7 @@ Please visit [tomato simulator!](https://info8000.aranisme.top/)
 - users: storing user information
 - cities and states: storing all cities in the United States with coordinates.
 
-**Signup page**: For new user to sign up. User can upload a image. [Signup](https://info8000.aranisme.top/signup)
+**Signup page**: For new user to sign up. User can upload an image. [Signup](https://info8000.aranisme.top/signup)
 
 **Login page**: For user to login. [Login](https://info8000.aranisme.top/login)
 
