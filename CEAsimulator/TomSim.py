@@ -23,7 +23,7 @@ class TomSim:
     - end_date: the julian day of the simulation end date.
     """
 
-    def __init__(self, co2, temperature, fruit_per_truss, lon, lat, start_date, end_date, debug=False):
+    def __init__(self, co2, temperature, fruit_per_truss, lon, lat, start_date, end_date, debug=True):
         # user define
         self.temperature = temperature
         self.co2 = co2

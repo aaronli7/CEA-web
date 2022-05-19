@@ -126,7 +126,8 @@ def query_ghi(lon, lat):
         "attributes": "ghi",
         "names": "tmy",
         "email": NREL_EMAIL,
-        "wkt": f"POINT({lon} {lat})"   
+        "wkt": f"POINT({lon} {lat})",
+        "utc": "false",
     }
 
     r = requests.get(url = NREL_URL, params=params)
