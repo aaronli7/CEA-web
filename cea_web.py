@@ -28,7 +28,7 @@ def allowed_file(filename):
 
 @app.route("/")
 def startpage():
-   return render_template("home.html", title="CEA Simulator Home")
+   return render_template("growthSimulate.html", title="CEA Simulator Home")
     
 @app.route("/signup", methods=['POST', 'GET'])
 def signup():

@@ -340,7 +340,7 @@ class TomSim:
         if self._side_shoot:
             self._flower_shoot_date = 100
             self.new_plant_density = 3.125
-            self._plant_density = new_plant_density
+            self._plant_density = self.new_plant_density
         self._plant_density *= self.cor_plant_density
 
     def daytime_radiation_character(self, day, lat_rad):
