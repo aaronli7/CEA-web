@@ -28,7 +28,7 @@
     </h3>
     <p>
         
-        <form method="POST" action="/growthSimulation">
+        <form method="POST" action="/">
             <div class="row">
                 <div class="col-md-3" >
                     <label for="CO2" class="form-label">CO2 (<span>&#181;</span>mol / mol)</label>
@@ -171,7 +171,7 @@
             $("#overlay").fadeIn(300);
             $.ajax({
                 type: "POST",
-                url: "/growthSimulation",
+                url: "/",
                 dataType: "json",
                 data: { 
                     temperature: $("#temperature").val(),

@@ -26,71 +26,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
-@app.route("/")
-def startpage():
-   return render_template("signup.html", title="CEA Simulator Home")
-    
-@app.route("/signup", methods=['POST', 'GET'])
-def signup():
-    if request.method == 'POST':
-        username = request.form["username"]
-        nameofUser = request.form["name"]
-        passwordtemp = request.form["password"]
-        password = generate_password_hash(passwordtemp, method='sha256')
-        print(password)
-        imgsave = ''
-        uploaded_file = request.files['file']
-        
-        if uploaded_file and allowed_file(uploaded_file.filename):
-            file_ext = os.path.splitext(uploaded_file.filename)[1]
-            imgsave = str(username) + str(file_ext)
-            uploaded_file.save(os.path.join(app.config['UPLOAD_FOLDER'], imgsave))        
-            
-        with sqlite3.connect(db_path) as con:
-            query = "SELECT userid FROM users where username ='" + str(username) + "'"
-            result = pd.read_sql(query, con, index_col=None)
-            print(result)
-            if len(result) == 0:
-                con.execute("INSERT INTO users(username, nameofUser, password) VALUES (?, ?, ?)",(username, nameofUser, password))
-                con.commit()
-                return render_template("signupSuccess.html", title="CEA Simulator Signup Successful", name = nameofUser, img_name = imgsave)
-            else:
-                flash('User already exists')
-                return render_template("signup.html", title="CEA Simulator signup Page")
-                    
-
-    return render_template("signup.html", title="CEA Simulator signup Page")
-
-@app.route("/signupSuccess", methods=['POST', 'GET'])
-def signupSuccess():
-    if request.method == 'POST':
-        
-        return redirect("/growthSimulation")
-    return render_template("signupSuccess.html", title="CEA Simulator Signup Successful")
-
-@app.route("/login", methods=['POST', 'GET'])
-def login():
-    if request.method == 'POST':
-        username = request.form["username"]
-        passwordcheck = request.form["password"]
-
-        with sqlite3.connect(db_path) as con:
-            query = "SELECT * FROM users where username ='" + str(username) + "'"
-            try:
-                result = pd.read_sql(query, con, index_col=None)
-                pwd = result.iloc[0]['password']
-            
-                if not check_password_hash(pwd,passwordcheck):
-                    flash('Please check your login details and try again.')
-                    return redirect("/login")
-                else:
-                    return redirect("/growthSimulation")
-            except:
-                 flash('Invalid User')
-
-    return render_template("login.html", title="CEA Simulator Signup Successful")
-
-@app.route("/growthSimulation", methods=['POST', 'GET'])
+@app.route("/", methods=['POST', 'GET'])
 def home():
     if request.method == 'POST':
         co2 = float(request.form["CO2"])
@@ -179,4 +115,4 @@ if not os.path.exists(db_path):
     create_db(db=db_path, sql_script=sql_path)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)
