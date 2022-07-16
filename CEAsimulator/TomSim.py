@@ -33,6 +33,9 @@ class TomSim:
         self.lat = lat
         self._start_time = start_date
         self._finish_time = end_date
+        # In case finish time is in next year. aaronli
+        if self._finish_time < self._start_time:
+            self._finish_time += 365
 
         self.IAGE = [0] * 75
         self._hourly_radiation_table = np.zeros((730, 24))
@@ -1289,27 +1292,27 @@ class TomSim:
             self.day = (self.time - 1) % 365 + 1
             self.daily_total_rad = 0
             self.cor_daily_total_rad = (
-                self._daily_radiation_sum_table[self.itime - 1] * self.cor_irradiance
+                self._daily_radiation_sum_table[(self.itime - 1) % 365] * self.cor_irradiance
             )
             for i in range(24):
                 self._current_day_radiation[i] = (
-                    self._hourly_radiation_table[self.itime - 1, i]
+                    self._hourly_radiation_table[(self.itime - 1) % 365, i]
                     * self.cor_irradiance
                 )
                 self._current_day_temperature[i] = (
-                    self._hourly_temperature_table[self.itime - 1, i]
+                    self._hourly_temperature_table[(self.itime - 1) % 365, i]
                     * self.cor_temperature
                 )
                 self._current_day_co2[i] = (
-                    self._hourly_co2_table[self.itime - 1, i] * self.cor_co2
+                    self._hourly_co2_table[(self.itime - 1) % 365, i] * self.cor_co2
                 )
                 self.daily_total_rad += self._current_day_radiation[i] * 3600
 
             self.corrected_temperature = (
-                self._daily_average_temperature_table[self.itime - 1]
+                self._daily_average_temperature_table[(self.itime - 1) % 365]
                 * self.cor_temperature
             )
-            self.corrected_co2 = self._daily_average_co2_table[self.itime - 1]
+            self.corrected_co2 = self._daily_average_co2_table[(self.itime - 1) % 365]
             print(
                 "temp and co2:\n", self.corrected_temperature, self.corrected_co2
             ) if self.dbg else None
