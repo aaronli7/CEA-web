@@ -74,6 +74,13 @@
                     </select>
                 </div>
             </div>
+            <div class="row">
+                <div class="form-group col-md-4">
+                    <label for="supplement_light" class="form-label">check if supplement light</label>
+                    <input type="checkbox" value="Yes" name="supplement_light" id="supplement_light">
+                </div>
+            </div>
+
             <br>
             <button id="start_button" type="button" name="starbut" class="btn btn-primary">Start Simulation</button>
         </form>
@@ -179,7 +186,8 @@
                     fruit_per_truss: $("#fruit_per_truss").val(),
                     city_id: $("#city_name").val(),
                     start_date: $("#start_date").val(),
-                    end_date: $("#end_date").val()
+                    end_date: $("#end_date").val(),
+                    if_supplement: $("#supplement_light")[0].checked
                 },
                 success: function(result) {
                     var html_location="City location: lat:" + result['latitude'].toFixed(2) + " lon:" + result['longitude'].toFixed(2);

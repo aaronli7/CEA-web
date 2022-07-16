@@ -35,6 +35,11 @@ def home():
         fruit_per_truss = int(request.form["fruit_per_truss"])
         start_date = (request.form["start_date"])
         end_date = (request.form["end_date"])
+        is_supplement_light = (request.form["if_supplement"])
+        if is_supplement_light == "false":
+            is_supplement_light = False
+        else:
+            is_supplement_light = True
         start_julian_day = datetime.datetime.strptime(start_date, date_format)
         end_julian_day = datetime.datetime.strptime(end_date, date_format)
 
