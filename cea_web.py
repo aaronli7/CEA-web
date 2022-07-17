@@ -38,6 +38,7 @@ def home():
         sp_start_date = (request.form["sp_start_date"])
         sp_end_date = (request.form["sp_end_date"])
         is_supplement_light = (request.form["if_supplement"])
+        supplement_light_intensity = float(request.form["light_intensity"])
         if is_supplement_light == "false":
             is_supplement_light = False
         else:
@@ -79,6 +80,7 @@ def home():
                         sp_end_date=sp_end_julian_day,
                         start_time=start_time,
                         end_time=end_time,
+                        intensity=supplement_light_intensity,
                         debug=True
                     )
             fresh_yield, dryweight_distribution, truss_growth = sim.start_simulation(config_path=simulator_config)
