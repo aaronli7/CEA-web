@@ -35,6 +35,8 @@ def home():
         fruit_per_truss = int(request.form["fruit_per_truss"])
         start_date = (request.form["start_date"])
         end_date = (request.form["end_date"])
+        sp_start_date = (request.form["sp_start_date"])
+        sp_end_date = (request.form["sp_end_date"])
         is_supplement_light = (request.form["if_supplement"])
         if is_supplement_light == "false":
             is_supplement_light = False
@@ -42,9 +44,17 @@ def home():
             is_supplement_light = True
         start_julian_day = datetime.datetime.strptime(start_date, date_format)
         end_julian_day = datetime.datetime.strptime(end_date, date_format)
+        sp_start_julian_day = datetime.datetime.strptime(sp_start_date, date_format)
+        sp_end_julian_day = datetime.datetime.strptime(sp_end_date, date_format)
+        start_time = int(request.form["start_time"].split(':')[0])
+        end_time = int(request.form["end_time"].split(':')[0])
 
         start_julian_day = start_julian_day.timetuple().tm_yday
         end_julian_day = end_julian_day.timetuple().tm_yday
+        
+        sp_start_julian_day = sp_start_julian_day.timetuple().tm_yday
+        sp_end_julian_day = sp_end_julian_day.timetuple().tm_yday
+        
         
         query_location = f"""
             SELECT 
@@ -57,7 +67,20 @@ def home():
             lat = location.iloc[0]["LATITUDE"]
             lon = location.iloc[0]["LONGITUDE"]
             # output_array = location.to_json(orient="values")
-            sim = TomSim(co2=co2, temperature=temp, fruit_per_truss=fruit_per_truss, lon=lon, lat=lat, start_date=start_julian_day, end_date=end_julian_day, debug=False)
+            sim = TomSim(co2=co2, 
+                        temperature=temp, 
+                        fruit_per_truss=fruit_per_truss, 
+                        lon=lon, 
+                        lat=lat, 
+                        start_date=start_julian_day, 
+                        end_date=end_julian_day, 
+                        isSupplement=is_supplement_light,
+                        sp_start_date=sp_start_julian_day,
+                        sp_end_date=sp_end_julian_day,
+                        start_time=start_time,
+                        end_time=end_time,
+                        debug=True
+                    )
             fresh_yield, dryweight_distribution, truss_growth = sim.start_simulation(config_path=simulator_config)
             
             return jsonify(

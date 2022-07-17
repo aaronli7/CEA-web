@@ -32,15 +32,15 @@
             <div class="row">
                 <div class="col-md-3" >
                     <label for="CO2" class="form-label">CO2 (<span>&#181;</span>mol / mol)</label>
-                    <input type="number" class="form-control" name="CO2" id="CO2" placeholder="234" step="any" required>
+                    <input type="number" class="form-control" name="CO2" id="CO2" value="234" step="any" required>
                   </div>
                   <div class="col-md-3">
                     <label for="temperature" class="form-label">temperature (Celsius)</label>
-                    <input type="number" class="form-control" name="temperature" id="temperature" placeholder="23" step="any" required>
+                    <input type="number" class="form-control" name="temperature" id="temperature" value="27" step="any" required>
                   </div>
                   <div class="col-md-3">
                       <label for="fruit_per_truss" class="form-label">Fruit per truss</label>
-                      <input type="number" class="form-control" name="fruit_per_truss" id="fruit_per_truss" placeholder="7" required>
+                      <input type="number" class="form-control" name="fruit_per_truss" id="fruit_per_truss" value="7" required>
                   </div>
             </div>
             <div class="row">
@@ -76,11 +76,32 @@
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label for="supplement_light" class="form-label">check if supplement light</label>
+                    <label for="supplement_light" class="form-label">check if apply supplement light</label>
                     <input type="checkbox" value="Yes" name="supplement_light" id="supplement_light">
                 </div>
+                <div class="col-md-3">
+                    <label for="sp_start_date" class="form-label">Supplement light start date</label>
+                    <input class="form-control" type="date" value="2021-01-10" name="sp_start_date" id="sp_start_date">
+                </div>
+                <div class="col-md-3">
+                    <label for="sp_end_date" class="form-label">Supplement light end Date</label>
+                    <input class="form-control" type="date" value="2021-11-25" name="sp_end_date" id="sp_end_date">
+                </div>
             </div>
-
+            <div class="row">
+                <div class="form-group col-md-4">
+                    Supplement light start time
+                    <input type="time" id="start_time" name="start_time" value="09:00" step="3600">                
+                    Supplement light end time
+                    <input type="time" id="end_time" name="end_time" value="17:00" step="3600">
+                </div>
+                <div class="col-md-3">
+                    <label for="light_intensity" class="form-label">light intensity (<span>&#181;</span>mol / m<sup>2</sup><span>&#183;</span> s)</label>
+                    <input type="number" class="form-control" name="light_intensity" id="light_intensity" value="100">
+                </div>
+            </div>
+            <br>
+           
             <br>
             <button id="start_button" type="button" name="starbut" class="btn btn-primary">Start Simulation</button>
         </form>
@@ -167,12 +188,18 @@
             e.preventDefault();
             var from_date = $("#start_date").val();
             var to_date = $("#end_date").val();
+            var sp_from_date = $("#sp_start_date").val();
+            var sp_to_date = $("#sp_end_date").val();
             if (!$('#temperature').val() || !$('#CO2').val() || !$('#fruit_per_truss').val() || !$('#state_name').val() || !$('#county_name').val() || !$('#city_name').val() || !$('#start_date').val() || !$('#end_date').val())  {
                 alert('Empty value!');
                 return
             }
             if(Date.parse(from_date) > Date.parse(to_date)){
-                alert("Invalid Date Range");
+                alert("Invalid Simulation Date Range");
+                return
+            }
+            if(Date.parse(sp_from_date) > Date.parse(sp_to_date)){
+                alert("Invalid Supplement Light Date Range");
                 return
             }
             $("#overlay").fadeIn(300);
@@ -187,7 +214,12 @@
                     city_id: $("#city_name").val(),
                     start_date: $("#start_date").val(),
                     end_date: $("#end_date").val(),
-                    if_supplement: $("#supplement_light")[0].checked
+                    sp_start_date: $("#sp_start_date").val(),
+                    sp_end_date: $("#sp_end_date").val(),
+                    if_supplement: $("#supplement_light")[0].checked,
+                    start_time: $("#start_time").val(),
+                    end_time: $("#end_time").val(),
+                    light_intensity: $("#light_intensity").val()
                 },
                 success: function(result) {
                     var html_location="City location: lat:" + result['latitude'].toFixed(2) + " lon:" + result['longitude'].toFixed(2);

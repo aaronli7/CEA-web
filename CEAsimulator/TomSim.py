@@ -23,7 +23,7 @@ class TomSim:
     - end_date: the julian day of the simulation end date.
     """
 
-    def __init__(self, co2, temperature, fruit_per_truss, lon, lat, start_date, end_date, debug=True):
+    def __init__(self, co2, temperature, fruit_per_truss, lon, lat, start_date, end_date, isSupplement, sp_start_date, sp_end_date, start_time, end_time, debug=True, ):
         # user define
         self.temperature = temperature
         self.co2 = co2
@@ -31,8 +31,13 @@ class TomSim:
         self.fruit_per_truss = fruit_per_truss
         self.lon = lon
         self.lat = lat
+        self.is_supplement = isSupplement
         self._start_time = start_date
         self._finish_time = end_date
+        self._sp_start_date = sp_start_date
+        self._sp_end_date = sp_end_date
+        self._sp_start_time = start_time
+        self._sp_end_time = end_time
         # In case finish time is in next year. aaronli
         if self._finish_time < self._start_time:
             self._finish_time += 365
