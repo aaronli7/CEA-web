@@ -46,6 +46,8 @@ class TomSim:
         self.IAGE = [0] * 75
         self._hourly_radiation_table = np.zeros((730, 24))
         self._current_day_radiation = np.zeros(24)
+        self._hourly_supplement_radiation_table = np.zeros((730, 24))
+        self._current_day_supplement_radiation = np.zeros(24)
         self._hourly_temperature_table = np.full((730, 24), self.temperature)
         self._current_day_temperature = np.zeros(24)
         self._hourly_co2_table = np.full((730, 24), self.co2)
@@ -119,6 +121,17 @@ class TomSim:
                     temperature_sum / 24
                 )
                 self._daily_average_co2_table[num_day - 1] = co2_sum / count
+
+        if self.is_supplement:
+            sp_start_date = self._sp_start_date
+            sp_end_date = self._sp_end_date
+            sp_start_time = self._sp_start_time
+            sp_end_time = self._sp_end_time
+            if sp_end_date < sp_start_date:
+                sp_end_date += 365
+            for i in range(sp_start_date - 1, sp_end_date):
+                for j in range(sp_start_time-1, sp_end_time):
+                    self._hourly_supplement_radiation_table[i%365, j] = self._sp_intensity
 
         if self.dbg:
             print("Debug msg:")
