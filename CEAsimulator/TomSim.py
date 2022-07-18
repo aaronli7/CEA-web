@@ -749,6 +749,7 @@ class TomSim:
                     diffuse_radiation
                     * self.diffuse_rad_transmission
                     * self.cor_transmissivity
+                    + self._current_day_supplement_radiation[i-2]  # aaronli: add supplement diffuse light
                 )
                 self.direct_rad_transmission = (
                     self.dir_construct_trans * self.dir_glass_trans
@@ -758,6 +759,13 @@ class TomSim:
                     * self.direct_rad_transmission
                     * self.cor_transmissivity
                 )
+                temperature = self._current_day_temperature[i - 1]
+                co2 = self._current_day_co2[i - 1]
+                self.calc_light_response_curve(temperature, co2)
+                self.calc_assimilation()
+            elif self._current_day_supplement_radiation[i-2] != 0:
+                self.instant_dir_rad_flux = 0
+                self.instant_diff_rad_flux = self._current_day_supplement_radiation[i-2]
                 temperature = self._current_day_temperature[i - 1]
                 co2 = self._current_day_co2[i - 1]
                 self.calc_light_response_curve(temperature, co2)
@@ -1316,6 +1324,10 @@ class TomSim:
             for i in range(24):
                 self._current_day_radiation[i] = (
                     self._hourly_radiation_table[(self.itime - 1) % 365, i]
+                    * self.cor_irradiance
+                )
+                self._current_day_supplement_radiation[i] = (
+                    self._hourly_supplement_radiation_table[(self.itime - 1) % 365, i]
                     * self.cor_irradiance
                 )
                 self._current_day_temperature[i] = (
