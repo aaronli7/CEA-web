@@ -39,6 +39,7 @@ def home():
         sp_end_date = (request.form["sp_end_date"])
         is_supplement_light = (request.form["if_supplement"])
         supplement_light_intensity = float(request.form["light_intensity"])
+        electricity_rate = float(request.form["electricity_rate"])
         if is_supplement_light == "false":
             is_supplement_light = False
         else:
@@ -81,9 +82,10 @@ def home():
                         start_time=start_time,
                         end_time=end_time,
                         intensity=supplement_light_intensity,
+                        electricity_rate=electricity_rate,
                         debug=True
                     )
-            fresh_yield, dryweight_distribution, truss_growth = sim.start_simulation(config_path=simulator_config)
+            fresh_yield, dryweight_distribution, truss_growth, electricity_cost = sim.start_simulation(config_path=simulator_config)
             
             return jsonify(
                 latitude = lat,
@@ -95,7 +97,8 @@ def home():
                 roots = dryweight_distribution["roots"],                
                 yielded = dryweight_distribution["yield"],
                 days = truss_growth["days"],
-                truss_num = truss_growth["truss_number"]
+                truss_num = truss_growth["truss_number"],
+                electricity_cost = electricity_cost
             )
             
 

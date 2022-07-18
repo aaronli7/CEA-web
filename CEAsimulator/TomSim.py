@@ -23,7 +23,7 @@ class TomSim:
     - end_date: the julian day of the simulation end date.
     """
 
-    def __init__(self, co2, temperature, fruit_per_truss, lon, lat, start_date, end_date, isSupplement, sp_start_date, sp_end_date, start_time, end_time, intensity, debug=True):
+    def __init__(self, co2, temperature, fruit_per_truss, lon, lat, start_date, end_date, isSupplement, sp_start_date, sp_end_date, start_time, end_time, intensity, electricity_rate, debug=True):
         # user define
         self.temperature = temperature
         self.co2 = co2
@@ -39,6 +39,7 @@ class TomSim:
         self._sp_start_time = start_time
         self._sp_end_time = end_time
         self._sp_intensity = intensity
+        self._electricity_rate = electricity_rate
         # In case finish time is in next year. aaronli
         if self._finish_time < self._start_time:
             self._finish_time += 365
@@ -132,6 +133,11 @@ class TomSim:
             for i in range(sp_start_date - 1, sp_end_date):
                 for j in range(sp_start_time-1, sp_end_time):
                     self._hourly_supplement_radiation_table[i%365, j] = self._sp_intensity
+
+            self.electricity_cost = self._electricity_rate * (sp_end_date - sp_start_date) * (sp_end_time - sp_start_time) * 0.01
+
+        else:
+            self.electricity_cost = 0
 
         if self.dbg:
             print("Debug msg:")
@@ -1461,7 +1467,9 @@ class TomSim:
         }
         # the tomatos contain approximately %94 water.
         fresh_yield = total_dry_yield / 0.06
+        
+        electricity_cost = self.electricity_cost
 
         print("simulation is over...") if self.dbg else None
 
-        return fresh_yield, dry_weight_distribution, truss_growh
+        return fresh_yield, dry_weight_distribution, truss_growh, electricity_cost

@@ -32,15 +32,15 @@
             <div class="row">
                 <div class="col-md-3" >
                     <label for="CO2" class="form-label">CO2 (<span>&#181;</span>mol / mol)</label>
-                    <input type="number" class="form-control" name="CO2" id="CO2" value="234" step="any" required>
+                    <input type="number" class="form-control" name="CO2" id="CO2" min="0" value="234" step="any" required>
                   </div>
                   <div class="col-md-3">
                     <label for="temperature" class="form-label">temperature (Celsius)</label>
-                    <input type="number" class="form-control" name="temperature" id="temperature" value="27" step="any" required>
+                    <input type="number" class="form-control" name="temperature" id="temperature" min="0" value="27" step="any" required>
                   </div>
                   <div class="col-md-3">
                       <label for="fruit_per_truss" class="form-label">Fruit per truss</label>
-                      <input type="number" class="form-control" name="fruit_per_truss" id="fruit_per_truss" value="7" required>
+                      <input type="number" class="form-control" name="fruit_per_truss" id="fruit_per_truss" min="0" value="7" required>
                   </div>
             </div>
             <div class="row">
@@ -99,6 +99,10 @@
                     <label for="light_intensity" class="form-label">light intensity (<span>&#181;</span>mol / m<sup>2</sup><span>&#183;</span> s)</label>
                     <input type="number" class="form-control" name="light_intensity" id="light_intensity" value="100">
                 </div>
+                <div class="col-md-3">
+                    <label for="electricity_rate" class="form-label">electricity rate per hour (&#162;/ kWh)</label>
+                    <input type="number" class="form-control" name="electricity_rate" id="electricity_rate" min="0" value="12.26">
+                </div>
             </div>
             <br>
            
@@ -111,6 +115,7 @@
     </h2>
     <p id="sim_result"></p>
     <p id="yield"></p>
+    <p id="electricity_cost"></p>
     
     <div class="float-container">
         <div class="float-child">
@@ -219,15 +224,18 @@
                     if_supplement: $("#supplement_light")[0].checked,
                     start_time: $("#start_time").val(),
                     end_time: $("#end_time").val(),
-                    light_intensity: $("#light_intensity").val()
+                    light_intensity: $("#light_intensity").val(),
+                    electricity_rate: $("#electricity_rate").val()
                 },
                 success: function(result) {
                     var html_location="City location: lat:" + result['latitude'].toFixed(2) + " lon:" + result['longitude'].toFixed(2);
                     var html_yield = "\ntotal yield: " + (result['total_yield'] / 1000).toFixed(3)+ " kg/m<sup>2</sup>"
+                    var html_electricity_cost = "\ntotal supplement electricity cost: $" + result['electricity_cost'].toFixed(2)
                     //var html_yield1 = result
 
                     $("#sim_result").html(html_location);
                     $("#yield").html(html_yield);
+                    $("#electricity_cost").html(html_electricity_cost);
 
                     
                     trussData = [];
