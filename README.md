@@ -1,21 +1,23 @@
-# INFO 8000 course project (Spring 2021)
+<!--
+ * @Author: Qi7
+ * @Date: 2022-04-07 10:03:14
+ * @LastEditors: aaronli-uga ql61608@uga.edu
+ * @LastEditTime: 2022-07-20 23:39:41
+ * @Description: 
+-->
+# CEA Tomato Simulator
 ## Introduction
-**Group menmbers**: *Qi Li*, *Soumya pal*
+**Author**: *Qi Li*
 
 In this project, we built a web application for users to simulate the tomato growth in the greenhouse.
 
 By inputing the parameters such as temperature, CO2, simulation time range and location, users can get the numerical and visulization result including **total yield of the tomatoes**, **dry weight distribution** and **Growth of truss number**.
-
-Please visit [tomato simulator!](https://info8000.aranisme.top/)
 
 ## Components
 **database tables**:
 - users: storing user information
 - cities and states: storing all cities in the United States with coordinates.
 
-**Signup page**: For new user to sign up. User can upload an image. [Signup](https://info8000.aranisme.top/signup)
-
-**Login page**: For user to login. [Login](https://info8000.aranisme.top/login)
 
 **Main page**: For user to simulate the tomato growth and check the result. 
 
@@ -23,9 +25,4 @@ Please visit [tomato simulator!](https://info8000.aranisme.top/)
 **Flask, bootstrap, Jquery, canvasJS, Ajax**
 
 ## Deployment
-The web application has been deployed on a google cloud platform at: [tomato simulator!](https://info8000.aranisme.top/)
-
-Login:
-```
-ssh -i ~/.ssh/info8000sp21 kjjohnsen@34.74.130.215
-```
+The web application has been deployed on a google cloud platform at: [tomato simulator!](https://cea.sensorweb.us)
