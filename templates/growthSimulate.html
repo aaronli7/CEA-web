@@ -237,32 +237,34 @@
                     $("#yield").html(html_yield);
                     $("#electricity_cost").html(html_electricity_cost);
 
+                    tt = result['weekly_fresh_yield']
+
                     
-                    trussData = [];
-                    count = result['days'].length
+                    weekly_yield = [];
+                    count = result['weekly_fresh_yield'].length
                     for (var i = 0; i < count; i +=1){
-                        trussData.push({
-                            x: result['days'][i],
-                            y: result['truss_num'][i]
+                        weekly_yield.push({
+                            x: i + 1,
+                            y: result['weekly_fresh_yield'][i]
                         });
                     }
                     // Line chart
                     var lineChart = {
                         theme: "light2",
                         title: {
-                            text: "truss number growth"
+                            text: "Weekly Tomatos Fresh yield"
                         },
                         axisX: {
-                                title: "number of days",
+                                title: "The Number of Weeks",
                         },
                         axisY:{
-                            title: "Truss number",
+                            title: "Fresh Yield (kg)",
                             includeZero: true,
                             valueFormatString: "#0"
                         },
                         data:[{
                             type: "line",
-                            dataPoints: trussData,
+                            dataPoints: weekly_yield,
                         }]
                     }
                     // pie chart

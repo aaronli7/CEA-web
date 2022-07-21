@@ -83,9 +83,9 @@ def home():
                         end_time=end_time,
                         intensity=supplement_light_intensity,
                         electricity_rate=electricity_rate,
-                        debug=True
+                        debug=False
                     )
-            fresh_yield, dryweight_distribution, truss_growth, electricity_cost = sim.start_simulation(config_path=simulator_config)
+            fresh_yield, dryweight_distribution, truss_growth, electricity_cost, weekly_accumulate_fresh_yield, weekly_fresh_yield = sim.start_simulation(config_path=simulator_config)
             
             return jsonify(
                 latitude = lat,
@@ -98,7 +98,9 @@ def home():
                 yielded = dryweight_distribution["yield"],
                 days = truss_growth["days"],
                 truss_num = truss_growth["truss_number"],
-                electricity_cost = electricity_cost
+                electricity_cost = electricity_cost,
+                weekly_acc_fresh_yield = weekly_accumulate_fresh_yield,
+                weekly_fresh_yield = weekly_fresh_yield
             )
             
 

@@ -1318,6 +1318,7 @@ class TomSim:
         distri_writer = csv.writer(f_distri)
         fruitdev_writer = csv.writer(f_fruitdev)
         self.truss_counter = []
+        daily_yield = []
         while self.time <= self._finish_time:
             self.itime = self.time
 
@@ -1417,6 +1418,12 @@ class TomSim:
             self.truss_counter.append(self._initial_truss)
             self.time += self._sim_time_step
 
+            daily_fresh_yield = self.total_dry_weight - (self._init_dry_weight_roots + self.dry_weight_stems_existing + self.dry_weight_leaves_existing + self.dry_weight_organs_existing)
+
+            if daily_fresh_yield < 1:
+                daily_fresh_yield = 0
+            daily_yield.append((daily_fresh_yield / 0.06) / 1000) # the tomatos contain approximately %94 water (kg).
+
         f_growth.close()
         f_distri.close()
 
@@ -1470,6 +1477,22 @@ class TomSim:
         
         electricity_cost = self.electricity_cost
 
+        weekly_accumulate_fresh_yield = []
+        weekly_fresh_yield = []
+        weekly_sum = 0
+        for i in range(len(daily_yield)):
+            weekly_sum += daily_yield[i]
+            if i % 7 == 0:
+                weekly_accumulate_fresh_yield.append(weekly_sum)
+                weekly_sum = 0
+        
+        for i in range(len(weekly_accumulate_fresh_yield)):
+            if i == 0 :
+                weekly_fresh_yield.append(weekly_accumulate_fresh_yield[i])
+            else:
+                weekly_fresh_yield.append(weekly_accumulate_fresh_yield[i] - weekly_accumulate_fresh_yield[i-1])
+
+
         print("simulation is over...") if self.dbg else None
 
-        return fresh_yield, dry_weight_distribution, truss_growh, electricity_cost
+        return fresh_yield, dry_weight_distribution, truss_growh, electricity_cost, weekly_accumulate_fresh_yield, weekly_fresh_yield
