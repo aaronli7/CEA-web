@@ -76,23 +76,23 @@
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
-                    <label for="supplement_light" class="form-label">check if apply supplement light</label>
+                    <label for="supplement_light" class="form-label">check to apply supplemental light</label>
                     <input type="checkbox" value="Yes" name="supplement_light" id="supplement_light">
                 </div>
                 <div class="col-md-3">
-                    <label for="sp_start_date" class="form-label">Supplement light start date</label>
+                    <label for="sp_start_date" class="form-label">Supplemental light start date</label>
                     <input class="form-control" type="date" value="2021-01-10" name="sp_start_date" id="sp_start_date">
                 </div>
                 <div class="col-md-3">
-                    <label for="sp_end_date" class="form-label">Supplement light end Date</label>
+                    <label for="sp_end_date" class="form-label">Supplemental light end Date</label>
                     <input class="form-control" type="date" value="2021-11-25" name="sp_end_date" id="sp_end_date">
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col-md-4">
-                    Supplement light start time
+                    Supplemental light start time
                     <input type="time" id="start_time" name="start_time" value="09:00" step="3600">                
-                    Supplement light end time
+                    Supplemental light end time
                     <input type="time" id="end_time" name="end_time" value="17:00" step="3600">
                 </div>
                 <div class="col-md-3">
@@ -204,7 +204,7 @@
                 return
             }
             if(Date.parse(sp_from_date) > Date.parse(sp_to_date)){
-                alert("Invalid Supplement Light Date Range");
+                alert("Invalid Supplemental Light Date Range");
                 return
             }
             $("#overlay").fadeIn(300);
@@ -230,7 +230,7 @@
                 success: function(result) {
                     var html_location="City location: lat:" + result['latitude'].toFixed(2) + " lon:" + result['longitude'].toFixed(2);
                     var html_yield = "\ntotal yield: " + (result['total_yield'] / 1000).toFixed(3)+ " kg/m<sup>2</sup>"
-                    var html_electricity_cost = "\ntotal supplement electricity cost: $" + result['electricity_cost'].toFixed(2)
+                    var html_electricity_cost = "\ntotal supplemental electricity cost: $" + result['electricity_cost'].toFixed(2)
                     //var html_yield1 = result
 
                     $("#sim_result").html(html_location);
